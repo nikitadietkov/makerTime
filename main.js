@@ -89,7 +89,7 @@ $(document).ready(function () {
     const $noteText = $('#inp-note-text');
     let isInpName = true;
 
-    loadNotes();
+    if (localStorage.getItem('notes')) loadNotes()
 
     $('#inp-note-add').on('click', function () {
         const nowDate = new Date();
