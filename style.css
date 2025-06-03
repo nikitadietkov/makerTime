@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+
+*, *::after, *::before {
+    margin: 0;
+    padding: 0;
+    font-family: 'Tektur';
+}
+
+body {
+    background-color: #09122C;
+}
+
+.archived {
+    opacity: 0.4;
+}
+
+
+
+.input-notes {
+    width: max-content;
+    margin: 2vw auto;
+    display: flex;
+    column-gap: 5px;
+}
+
+.input-notes #inp-note-text, #inp-note-name {
+    display: none;
+    width: 70vw;
+    padding: 2%;
+
+    font-size: 2em;
+
+    outline: none;
+    border: #00000080;
+    border-radius: 20px 10px 10px 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+#inp-note-name {
+    display: block;
+}
+
+.input-notes #inp-note-add {
+    width: max-content;
+    height: 100%;
+    padding: 2%;
+
+    font-size: 2em;
+    
+    outline: none;
+    cursor: pointer;
+    border: #00000080;
+    border-radius: 10px 20px 20px 10px;
+    background-color: rgba(0, 255, 157, 0.664);
+}
+
+
+.notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3em;
+
+
+    padding: 5%;
+}
+
+.notes .note-i {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    width: max-content;
+    max-width: 94%;
+    padding: 3%;
+
+    color: #E17564;
+    font-size: 2em;
+    text-align: justify;
+    font-family: sans-serif;
+
+    border-radius: 15px 5px;
+    background-color: #872341;
+    word-break: break-word;
+}
+
+.notes .note-i p {
+    display: inline;
+    word-break: break-word;
+}
+
+.notes .note-i .date {
+    opacity: 0.3;
+    align-self: flex-end;
+}
+
+.notes .note-i .underNote {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3%;
+}
+
+.notes .note-i .underNote button {
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.notes .note-i .underNote button img {
+    width: 100%;
+    height: 100%;
+
+    cursor: pointer;
+    user-select: none;
+}
