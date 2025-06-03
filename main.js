@@ -122,7 +122,7 @@ $(document).ready(function () {
                 $noteName.show();
                 isInpName = true;
             } else {
-                alert('Напиши текст заметки');
+                alert('Напиши текст до нотатки');
             }
         }
     });
@@ -130,7 +130,7 @@ $(document).ready(function () {
 
     $(document).on('contextmenu', '.note-i', function (e) {
         e.preventDefault();
-        let removeNote = confirm('Удалить заметку?');
+        let removeNote = confirm('Видалити нотатку?');
         if (removeNote) {
             let id = $(this).data('id');
             deleteNote(id);
