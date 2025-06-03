@@ -70,6 +70,7 @@ body {
     justify-content: space-between;
 
     width: max-content;
+    min-width: 20%;
     max-width: 94%;
     padding: 3%;
 

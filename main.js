@@ -148,24 +148,28 @@ $(document).ready(function () {
     });
 
     function saveNote(note) {
-        let notes = JSON.parse(localStorage.getItem('notes') || []);
+        let stored = localStorage.getItem('notes');
+let notes = stored ? JSON.parse(stored) : [];
         notes.push(note);
         localStorage.setItem('notes', JSON.stringify(notes));
     }
 
     function loadNotes() {
-        let notes = JSON.parse(localStorage.getItem('notes') || []);
+        let stored = localStorage.getItem('notes');
+let notes = stored ? JSON.parse(stored) : [];
         notes.forEach(note => renderNote(note));
     }
 
     function deleteNote(id) {
-        let notes = JSON.parse(localStorage.getItem('notes') || []);
+        let stored = localStorage.getItem('notes');
+let notes = stored ? JSON.parse(stored) : [];
         notes = notes.filter(note => note.id !== id);
         localStorage.setItem('notes', JSON.stringify(notes));
     }
 
     function toggleArchive(id) {
-        let notes = JSON.parse(localStorage.getItem('notes') || []);
+        let stored = localStorage.getItem('notes');
+let notes = stored ? JSON.parse(stored) : [];
         notes = notes.map(note => {
             if (note.id === id) {
                 note.archived = !note.archived;
