@@ -14,13 +14,16 @@ body {
     opacity: 0.4;
 }
 
-
-
-.input-notes {
-    width: max-content;
+.input-notes .inputs {
+    max-width: 70vw;
     margin: 2vw auto;
     display: flex;
     column-gap: 5px;
+}
+
+.progress {
+    width: 70vw;
+    margin: 0 auto;
 }
 
 .input-notes #inp-note-text, #inp-note-name {
@@ -137,14 +140,14 @@ body {
     word-break: break-word;
 }
 
-.notes .note-i h1 span, .notes .note-i p span, .fullNote h1 span, .fullNote p span {
+.notes .note-i h2 span, .notes .note-i p span, .fullNote h2 span, .fullNote p span {
     color: #dd533d;
     cursor: pointer;
 }
 
 .notes .note-i .date, .fullNote .date {
     opacity: 0.3;
-    align-self: flex-end;
+    font-size: .8em;
 }
 
 .notes .note-i .underNote, .fullNote .underNote {

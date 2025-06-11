@@ -18,6 +18,9 @@ $(document).ready(function () {
                 isInpName = false;
                 $noteName.hide();
                 $noteText.show();
+                $('.progress-bar').text('50%');
+                $('.progress-bar').attr('aria-valuenow', '50');
+                $('.progress-bar').css({ width: '50%' });
             } else {
                 alert('Напиши заголовок нотатки');
             }
@@ -40,11 +43,20 @@ $(document).ready(function () {
                 $noteText.hide();
                 $noteName.show();
                 isInpName = true;
+                $('.progress-bar').text('100%');
+                $('.progress-bar').attr('aria-valuenow', '100');
+                $('.progress-bar').css({ width: '100%' });
             } else {
                 alert('Напиши текст до нотатки');
             }
         }
     });
+    
+    $(document).on('click', '#inp-note-name', function () {
+        $('.progress-bar').text('0%');
+        $('.progress-bar').attr('aria-valuenow', '0');
+        $('.progress-bar').css({ width: '0%' });
+    })
 
     $('#inp-note-edit').on('click', function () {
         if (!isEdit || editingNoteId === null) {
