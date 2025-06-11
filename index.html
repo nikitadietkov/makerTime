@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
-        integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
-        crossorigin="anonymous"></script>
-    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js" integrity="sha256-9zljDKpE/mQxmaR4V2cGVaQ7arF3CcXxarvgr7Sj8Uc=" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
     <script src="alertify/alertify.min.js"></script>
     <script defer src="main.js"></script>
 
@@ -19,22 +18,36 @@
     <title>Notes</title>
 </head>
 <body>
+    <div class="backgroundNote">
+        <div class="fullNote">
+            <h2></h2>
+            <p></p>
+            <div class="underNote">
+                <p class="date">18.09.2025</p>
+            </div>
+        </div>
+    </div>
+
+
     <div class="input-notes">
         <input id="inp-note-name" placeholder="Write your NAME of note..." type="text">
         <input id="inp-note-text" placeholder="Write your note..." type="text">
         <button id="inp-note-add">додати</button>
+        <button id="inp-note-edit">редагувати</button>
     </div>
 
     <div class="notes">
         <!-- <div class="note-i">
-            <h2>Name Note</h2>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, corrupti.</p>
+            <h2>Name Note<button class="editNameBtn"><img src="img/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button></h2>
+            <p class="noteName">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo, corrupti.<button class="editBtn"><img src="img/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button></p>
             <div class="underNote">
-                <button class="arhiveBtn"><img src="img/inbox_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button>
+                <div class="tools">
+                    <button class="arhiveBtn"><img src="img/inbox_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button>      
+                    <button class="deleteBtn"><img src="img/delete_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button>
+                </div>
                 <p class="date">18.09.2025</p>
             </div>
         </div> -->
-
     </div>
 </body>
 </html>

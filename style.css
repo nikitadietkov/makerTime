@@ -40,7 +40,7 @@ body {
     display: block;
 }
 
-.input-notes #inp-note-add {
+.input-notes #inp-note-add, .input-notes #inp-note-edit {
     width: max-content;
     height: 100%;
     padding: 2%;
@@ -54,6 +54,11 @@ body {
     background-color: rgba(0, 255, 157, 0.664);
 }
 
+#inp-note-edit {
+    display: none;
+    opacity: 0;
+}
+
 
 .notes {
     display: flex;
@@ -64,52 +69,125 @@ body {
     padding: 5%;
 }
 
+.backgroundNote {
+    display: none;
+    opacity: 0;
+
+    position: fixed;
+    top: 0;
+    background-color: #000000b9;
+    width: 100%;
+    height: 100%;
+    z-index: 998;
+}
+
+
 .notes .note-i {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
+    
     width: max-content;
     min-width: 20%;
     max-width: 94%;
     padding: 3%;
-
+    
     color: #E17564;
     font-size: 2em;
     text-align: justify;
     font-family: sans-serif;
-
+    
     border-radius: 15px 5px;
     background-color: #872341;
     word-break: break-word;
 }
 
-.notes .note-i p {
+.fullNote {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 10rem;
+    max-height: 40rem;
+    padding: 2rem;
+
+    position: fixed;
+    top: 5rem;
+    left: 5rem;
+    right: 5rem;
+    overflow: scroll;
+
+    color: #E17564;
+    font-size: 2em;
+    text-align: justify;
+    font-family: sans-serif;
+    
+    border-radius: 15px 5px;
+    background-color: #872341;
+    word-break: break-word;
+
+    scrollbar-color: red orange;
+    scrollbar-width: thin;
+
+    z-index: 1000;
+}
+
+.notes .note-i p, .fullNote p {
     display: inline;
     word-break: break-word;
 }
 
-.notes .note-i .date {
+.notes .note-i h1 span, .notes .note-i p span, .fullNote h1 span, .fullNote p span {
+    color: #dd533d;
+    cursor: pointer;
+}
+
+.notes .note-i .date, .fullNote .date {
     opacity: 0.3;
     align-self: flex-end;
 }
 
-.notes .note-i .underNote {
+.notes .note-i .underNote, .fullNote .underNote {
     display: flex;
     justify-content: space-between;
     margin-top: 3%;
 }
 
-.notes .note-i .underNote button {
+.notes .note-i .underNote .tools, .fullNote .underNote .tools {
+    width: min-content;
+    height: 2em;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30%;
+}
+
+.notes .note-i .underNote .tools button,
+.notes .note-i p button,
+.notes .note-i h2 button {
     border: none;
     outline: none;
     background: none;
+    opacity: 0.7;
+}
+.notes .note-i .underNote .tools button:hover,
+.notes .note-i p button:hover,
+.notes .note-i h2 button:hover {
+    opacity: 1;
 }
 
-.notes .note-i .underNote button img {
-    width: 100%;
-    height: 100%;
+.notes .note-i .underNote .tools button img,
+.notes .note-i p button img,
+.notes .note-i h2 button img {
+    width: 40px;
+    height: 40px;
 
     cursor: pointer;
     user-select: none;
+}
+.notes .note-i p button img,
+.notes .note-i h2 button img {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
 }
