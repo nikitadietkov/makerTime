@@ -1,10 +1,26 @@
 $(document).ready(function () {
     const $noteName = $('#inp-note-name');
     const $noteText = $('#inp-note-text');
+    const $noteCat = $('#note-category');
     let isInpName = true;
     let isEdit = false;
     let editingNoteId = null;
     let editMode = '';
+    let categoryCheck = '';
+
+
+
+    let importants = 1;
+    let notImportants = 1;
+    let homeworks = 1;
+    let buyLists = 1;
+
+
+    $('.statistic-important').width(window.innerWidth / importants);
+    $('.statistic-notImportant').width(window.innerWidth / notImportants);
+    $('.statistic-homework').width(window.innerWidth / homeworks);
+    $('.statistic-buyList').width(window.innerWidth / buyLists);
+
 
     $('#inp-note-add').show();
 
@@ -30,6 +46,7 @@ $(document).ready(function () {
                     id: Date.now(),
                     name: $noteName.val(),
                     text: $noteText.val(),
+                    category: $noteCat.val(),
                     date: `${nowDate.getDate()}.${nowDate.getMonth() + 1}`,
                     time: `${nowDate.getHours()}:${nowDate.getMinutes()}`,
                     archived: false
@@ -56,7 +73,23 @@ $(document).ready(function () {
         $('.progress-bar').text('0%');
         $('.progress-bar').attr('aria-valuenow', '0');
         $('.progress-bar').css({ width: '0%' });
-    })
+    });
+
+    $(document).on('click', '.statistic-important, .statistic-notImportant, .statistic-homework, .statistic-buyList', function () {
+        const category = $(this).attr('class').split(' ')[1];
+        const isSelected = $(this).css('opacity') == '1';
+        $('.statistic-important, .statistic-notImportant, .statistic-homework, .statistic-buyList').css('opacity', '0.5');
+
+        if (!isSelected) {
+            $(this).css('opacity', '1');
+        } else {
+            $(this).css('opacity', '0.5');
+        }
+
+        categoryCheck = isSelected ? '' : category;
+        renderNotes();
+    });
+
 
     $('#inp-note-edit').on('click', function () {
         if (!isEdit || editingNoteId === null) {
@@ -71,8 +104,10 @@ $(document).ready(function () {
             if (note.id === editingNoteId) {
                 if (editMode === 'name') {
                     note.name = $noteName.val();
+                    note.category = $noteCat.val();
                 } else if (editMode === 'text') {
                     note.text = $noteText.val();
+                    note.category = $noteCat.val();
                 }
             }
             return note;
@@ -185,16 +220,11 @@ $(document).ready(function () {
         $('.fullNote h2').text(note.name);
         $('.fullNote p').text(note.text);
         $('.fullNote .date').text(note.time + ' ' + note.date)
-        $('.backgroundNote').show(0, function() {
-            $('.backgroundNote').animate({ 'opacity': '1' })
+        $('.fullNote').show(0, function() {
+            $('.fullNote').animate({ 'opacity': '1' })
         })
     });
 
-    $(document).on('click', '.backgroundNote', function () {
-        $('.backgroundNote').animate({ 'opacity': '0' }, function () {
-            $('.backgroundNote').hide(0);
-        })
-    });
     
     // function smoothInsertText(input, text) {
     //     $(input).val('');
@@ -209,21 +239,6 @@ $(document).ready(function () {
     //         }
     //     }, 100);
     // }
-
-    function editNote(updatedNote) {
-        let stored = localStorage.getItem('notes');
-        let notes = stored ? JSON.parse(stored) : [];
-
-        notes = notes.map(note => {
-            if (note.id === updatedNote.id) {
-                return updatedNote;
-            }
-            return note;
-        });
-
-        localStorage.setItem('notes', JSON.stringify(notes));
-        renderNotes();
-    }
 
     function saveNote(note) {
         let stored = localStorage.getItem('notes');
@@ -261,27 +276,116 @@ $(document).ready(function () {
         $('.notes').empty();
         let stored = localStorage.getItem('notes');
         let notes = stored ? JSON.parse(stored) : [];
-        notes.forEach(note => renderNote(note));
-    }
+        let categoryCounts = {
+            important: 0,
+            notImportant: 0,
+            homework: 0,
+            buyList: 0,
+        };
 
-    function renderNote(note) {
+        notes.forEach(note => {
+            renderNote(note);
+            categoryCounts[note.category]++;
+        });
+
+        // Set widths based on category counts
+        const totalNotes = notes.length;
+        $('.statistic-important').width(totalNotes ? (categoryCounts.important / totalNotes) * 100 + '%' : '0%');
+        $('.statistic-notImportant').width(totalNotes ? (categoryCounts.notImportant / totalNotes) * 100 + '%' : '0%');
+        $('.statistic-homework').width(totalNotes ? (categoryCounts.homework / totalNotes) * 100 + '%' : '0%');
+        $('.statistic-buyList').width(totalNotes ? (categoryCounts.buyList / totalNotes) * 100 + '%' : '0%');
+    }
+    
+
+    function renderNote(note) {    
         let noteName = '';
         let noteText = '';
         note.name.length > 15 ? noteName = note.name.slice(0, 15) + '<span class="openNote">...</span>' : noteName = note.name;
         note.text.length > 80 ? noteText = note.text.slice(0, 50) + '<span class="openNote">...</span>' : noteText = note.text;
-            
-        $('.notes').append(`
-            <div class="note-i ${note.archived ? 'archived' : ''}" data-id="${note.id}">
-                <h2>${noteName}<button class="editNameBtn"><img src="img/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button></h2>
-                <p class="noteName">${noteText}<button class="editBtn"><img src="img/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button></p>
-                <div class='underNote'>
-                    <div class="tools">
-                        <button class="arhiveBtn"><img src="img/inbox_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button>   
-                        <button class="deleteBtn"><img src="img/delete_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" alt=""></button>
+        
+
+        switch (categoryCheck) {
+            case '':
+                $('.notes').append(`
+                    <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
+                        <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
+                        <p class="noteName">${noteText}<button class="editBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></p>
+                        <div class='underNote'>
+                            <div class="tools">
+                                <button class="arhiveBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/></svg></button>   
+                                <button class="deleteBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+                            </div>
+                            <p class="date">${note.time} ${note.date}</p>
+                        </div>
                     </div>
-                    <p class="date">${note.time} ${note.date}</p>
-                </div>
-            </div>
-        `);
+                `);
+                break;
+            case 'important':
+                if (note.category == 'important')
+                    $('.notes').append(`
+                        <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
+                            <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
+                            <p class="noteName">${noteText}<button class="editBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></p>
+                            <div class='underNote'>
+                                <div class="tools">
+                                    <button class="arhiveBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/></svg></button>   
+                                    <button class="deleteBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+                                </div>
+                                <p class="date">${note.time} ${note.date}</p>
+                            </div>
+                        </div>
+                    `);
+                break;
+            case 'notImportant':
+                if (note.category == 'notImportant')
+                    $('.notes').append(`
+                        <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
+                            <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
+                            <p class="noteName">${noteText}<button class="editBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></p>
+                            <div class='underNote'>
+                                <div class="tools">
+                                    <button class="arhiveBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/></svg></button>   
+                                    <button class="deleteBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+                                </div>
+                                <p class="date">${note.time} ${note.date}</p>
+                            </div>
+                        </div>
+                    `);
+                break;
+            case 'homework':
+                if (note.category == 'homework')
+                    $('.notes').append(`
+                        <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
+                            <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
+                            <p class="noteName">${noteText}<button class="editBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></p>
+                            <div class='underNote'>
+                                <div class="tools">
+                                    <button class="arhiveBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/></svg></button>   
+                                    <button class="deleteBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+                                </div>
+                                <p class="date">${note.time} ${note.date}</p>
+                            </div>
+                        </div>
+                    `);
+                break;
+            case 'buyList':
+                if (note.category == 'buyList')
+                    $('.notes').append(`
+                        <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
+                            <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
+                            <p class="noteName">${noteText}<button class="editBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></p>
+                            <div class='underNote'>
+                                <div class="tools">
+                                    <button class="arhiveBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/></svg></button>   
+                                    <button class="deleteBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
+                                </div>
+                                <p class="date">${note.time} ${note.date}</p>
+                            </div>
+                        </div>
+                    `);
+                break;
+
+        }
+
     }
 });

@@ -1,17 +1,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
 
-*, *::after, *::before {
+*,
+*::after,
+*::before {
     margin: 0;
     padding: 0;
     font-family: 'Tektur';
 }
 
 body {
-    background-color: #09122C;
+    min-height: 100vh;
+    background:linear-gradient(125deg, #09122C, #122357);
 }
 
 .archived {
     opacity: 0.4;
+}
+
+.statistic {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 0;
+}
+
+.statistic .bar {
+    padding-left: 5px;
+    width: 99vw;
+    height: 30px;
+    color: aliceblue;
+    display: flex;
+    align-items: center;
+    border-radius: 0 5px 5px 0;
+    opacity: .5;
+    transition: .4s ease-in-out;
+}
+.statistic .bar:hover {
+    opacity: 1;
+}
+.statistic-important {
+    background-color: #872341;
+}
+.statistic-notImportant {
+    color: #000000 !important;
+    background-color: aquamarine;
+}
+.statistic-homework {
+    background-color: seagreen;
+}
+.statistic-buyList {
+    background-color: #122357;
 }
 
 .input-notes .inputs {
@@ -19,6 +58,9 @@ body {
     margin: 2vw auto;
     display: flex;
     column-gap: 5px;
+    position: relative;
+    z-index: 100;
+    opacity: 0;
 }
 
 .progress {
@@ -27,7 +69,7 @@ body {
 }
 
 .input-notes #inp-note-text, #inp-note-name {
-    display: none;
+    display: block;
     width: 70vw;
     padding: 2%;
 
@@ -36,14 +78,15 @@ body {
     outline: none;
     border: #00000080;
     border-radius: 20px 10px 10px 20px;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 1);
 }
 
 #inp-note-name {
     display: block;
 }
 
-.input-notes #inp-note-add, .input-notes #inp-note-edit {
+.input-notes #inp-note-add,
+.input-notes #inp-note-edit {
     width: max-content;
     height: 100%;
     padding: 2%;
@@ -54,7 +97,7 @@ body {
     cursor: pointer;
     border: #00000080;
     border-radius: 10px 20px 20px 10px;
-    background-color: rgba(0, 255, 157, 0.664);
+    background-color: rgba(0, 255, 157, 1);
 }
 
 #inp-note-edit {
@@ -62,6 +105,12 @@ body {
     opacity: 0;
 }
 
+#note-category {
+    width: max-content;
+    outline: none;
+    border-radius: 10px;
+    background-color: rgba(0, 255, 157, 1);
+}
 
 .notes {
     display: flex;
@@ -93,70 +142,139 @@ body {
     width: max-content;
     min-width: 20%;
     max-width: 94%;
-    padding: 3%;
+    padding: 1%;
     
-    color: #E17564;
-    font-size: 2em;
+    font-size: 1em;
     text-align: justify;
     font-family: sans-serif;
     
     border-radius: 15px 5px;
-    background-color: #872341;
     word-break: break-word;
+    button svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .tools button svg {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.important {
+    box-shadow: 0 0 20px #350e1a;
+    color: aliceblue;
+    background-color: #872341 !important;
+    button svg {
+        fill: #E17564;
+    }
+}
+
+.notImportant {
+    box-shadow: 0 0 20px rgb(17, 34, 85);
+    color: #09122C !important;
+    background-color: aquamarine !important;
+    button svg {
+        fill: rgb(69, 136, 114);
+    }
+}
+
+.homework {
+    box-shadow: 0 0 20px rgb(22, 66, 41);
+    color: #09122C;
+    background-color: seagreen !important;
+    button svg {
+        fill: rgb(24, 73, 46);
+    }
+}
+
+.buyList {
+    box-shadow: 0 0 20px #09112b;
+    color: aliceblue;
+    background-color: #122357 !important;
+    button svg {
+        fill: #1b368f;
+    }
+}
+
+.notes .note-i .noteName {
+    font-size: 1.5em;
 }
 
 .fullNote {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: space-between;
 
     min-height: 10rem;
     max-height: 40rem;
-    padding: 2rem;
 
     position: fixed;
     top: 5rem;
     left: 5rem;
     right: 5rem;
     overflow: scroll;
+    padding: 0 2rem;
 
-    color: #E17564;
+    opacity: 0;
     font-size: 2em;
+    color: #ffffff;
     text-align: justify;
     font-family: sans-serif;
     
-    border-radius: 15px 5px;
-    background-color: #872341;
     word-break: break-word;
+    border-radius: 15px 5px;
+    background-color: #000000;
+    box-shadow: 0 0 0 100rem #000000af;
 
-    scrollbar-color: red orange;
+    scrollbar-color: rgb(255, 255, 255) rgb(0, 0, 0);
     scrollbar-width: thin;
 
     z-index: 1000;
 }
 
-.notes .note-i p, .fullNote p {
+.fullNote h2 {
+    font-size: 1.3em;
+    padding: .7rem 1rem 0 1rem;
+}
+
+.fullNote .underNote {
+    margin: 0 .7rem !important;
+    p {
+        font-size: .6em;
+    }
+}
+
+.notes .note-i p,
+.fullNote p {
     display: inline;
     word-break: break-word;
 }
 
-.notes .note-i h2 span, .notes .note-i p span, .fullNote h2 span, .fullNote p span {
+.notes .note-i h2 span,
+.notes .note-i p span,
+.fullNote h2 span,
+.fullNote p span {
     color: #dd533d;
     cursor: pointer;
 }
 
-.notes .note-i .date, .fullNote .date {
-    opacity: 0.3;
-    font-size: .8em;
+.notes .note-i .date,
+.fullNote .date {
+    opacity: 0.5;
+    font-size: 1em;
+    margin: 0;
 }
 
-.notes .note-i .underNote, .fullNote .underNote {
+.notes .note-i .underNote,
+.fullNote .underNote {
     display: flex;
     justify-content: space-between;
     margin-top: 3%;
 }
 
-.notes .note-i .underNote .tools, .fullNote .underNote .tools {
+.notes .note-i .underNote .tools,
+.fullNote .underNote .tools {
     width: min-content;
     height: 2em;
     display: flex;
@@ -172,6 +290,7 @@ body {
     outline: none;
     background: none;
     opacity: 0.7;
+    transition: .2s ease-in-out;
 }
 .notes .note-i .underNote .tools button:hover,
 .notes .note-i p button:hover,
