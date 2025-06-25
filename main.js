@@ -256,12 +256,7 @@ $(document).ready(function () {
         let stored = localStorage.getItem('notes');
         let notes = stored ? JSON.parse(stored) : [];
         notes.forEach(note => renderNote(note));
-        notes.forEach((note, index) => {
-            if (note.category == nameCategory[index]);
-            console.log(nameCategory[index]);
-            
-            categoryCounts[index] += 1;
-        });
+        updateStatistics(notes);
     }
 
     function deleteNote(id) {
@@ -299,8 +294,15 @@ $(document).ready(function () {
     }
 
     function updateStatistics(notes) {
+        categoryCounts = [0, 0, 0, 0];
         console.log(categoryCounts);
-        
+
+        notes.forEach(note => {
+            if (note.category == 'statistic-important') categoryCounts[0]++;
+            if (note.category == 'statistic-notImportant') categoryCounts[1]++;
+            if (note.category == 'statistic-homework') categoryCounts[2]++;
+            if (note.category == 'statistic-buyList') categoryCounts[3]++;
+        });
         
         const totalNotes = notes.length;
         $('.statistic-important').width(totalNotes ? (categoryCounts.important / totalNotes) * 100 + '%' : '0%');
