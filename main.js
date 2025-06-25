@@ -7,6 +7,10 @@ $(document).ready(function () {
     let editingNoteId = null;
     let editMode = '';
     let categoryCheck = '';
+    let categoryCounts = [0, 0, 0, 0];
+
+    let nameCategory = ['statistic-important', 'statistic-notImportant', 'statistic-homework', 'statistic-buyList'];
+
 
 
 
@@ -86,10 +90,8 @@ $(document).ready(function () {
             categoryCheck = category;
         } else {
             categoryCheck = '';
-            
         }
 
-        console.log('Updated category check:', categoryCheck);
         renderNotes();
     });
 
@@ -254,6 +256,12 @@ $(document).ready(function () {
         let stored = localStorage.getItem('notes');
         let notes = stored ? JSON.parse(stored) : [];
         notes.forEach(note => renderNote(note));
+        notes.forEach((note, index) => {
+            if (note.category == nameCategory[index]);
+            console.log(nameCategory[index]);
+            
+            categoryCounts[index] += 1;
+        });
     }
 
     function deleteNote(id) {
@@ -286,23 +294,14 @@ $(document).ready(function () {
             renderNote(note);
         });
 
+        
         updateStatistics(notes);
-        console.log('Filtered Notes:', filteredNotes);
-        console.log('Category Check:', categoryCheck);
     }
 
     function updateStatistics(notes) {
-        let categoryCounts = {
-            important: 0,
-            notImportant: 0,
-            homework: 0,
-            buyList: 0,
-        };
-
-        notes.forEach(note => {
-            categoryCounts[note.category]++;
-        });
-
+        console.log(categoryCounts);
+        
+        
         const totalNotes = notes.length;
         $('.statistic-important').width(totalNotes ? (categoryCounts.important / totalNotes) * 100 + '%' : '0%');
         $('.statistic-notImportant').width(totalNotes ? (categoryCounts.notImportant / totalNotes) * 100 + '%' : '0%');
@@ -311,7 +310,7 @@ $(document).ready(function () {
     }
     
 
-    function renderNote(note) {    
+    function renderNote(note) {           
         let noteName = '';
         let noteText = '';
         note.name.length > 15 ? noteName = note.name.slice(0, 15) + '<span class="openNote">...</span>' : noteName = note.name;
@@ -334,8 +333,7 @@ $(document).ready(function () {
                     </div>
                 `);
                 break;
-            case 'important':
-                if (note.category == 'important')
+            case 'statistic-important':
                     $('.notes').append(`
                         <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
                             <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
@@ -350,8 +348,7 @@ $(document).ready(function () {
                         </div>
                     `);
                 break;
-            case 'notImportant':
-                if (note.category == 'notImportant')
+            case 'statistic-notImportant':
                     $('.notes').append(`
                         <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
                             <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
@@ -366,8 +363,7 @@ $(document).ready(function () {
                         </div>
                     `);
                 break;
-            case 'homework':
-                if (note.category == 'homework')
+            case 'statistic-homework':
                     $('.notes').append(`
                         <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
                             <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
@@ -382,8 +378,7 @@ $(document).ready(function () {
                         </div>
                     `);
                 break;
-            case 'buyList':
-                if (note.category == 'buyList')
+            case 'statistic-buyList':
                     $('.notes').append(`
                         <div class="note-i ${note.archived ? 'archived' : ''} ${note.category}" data-id="${note.id}">
                             <h2>${noteName}<button class="editNameBtn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button></h2>
