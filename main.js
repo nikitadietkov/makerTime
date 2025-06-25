@@ -78,15 +78,18 @@ $(document).ready(function () {
     $(document).on('click', '.statistic-important, .statistic-notImportant, .statistic-homework, .statistic-buyList', function () {
         const category = $(this).attr('class').split(' ')[1];
         const isSelected = $(this).css('opacity') == '1';
+
         $('.statistic-important, .statistic-notImportant, .statistic-homework, .statistic-buyList').css('opacity', '0.5');
 
         if (!isSelected) {
             $(this).css('opacity', '1');
+            categoryCheck = category;
         } else {
-            $(this).css('opacity', '0.5');
+            categoryCheck = '';
+            
         }
 
-        categoryCheck = isSelected ? '' : category;
+        console.log('Updated category check:', categoryCheck);
         renderNotes();
     });
 
@@ -276,6 +279,19 @@ $(document).ready(function () {
         $('.notes').empty();
         let stored = localStorage.getItem('notes');
         let notes = stored ? JSON.parse(stored) : [];
+
+        let filteredNotes = categoryCheck ? notes.filter(note => note.category === categoryCheck) : notes;
+
+        filteredNotes.forEach(note => {
+            renderNote(note);
+        });
+
+        updateStatistics(notes);
+        console.log('Filtered Notes:', filteredNotes);
+        console.log('Category Check:', categoryCheck);
+    }
+
+    function updateStatistics(notes) {
         let categoryCounts = {
             important: 0,
             notImportant: 0,
@@ -284,11 +300,9 @@ $(document).ready(function () {
         };
 
         notes.forEach(note => {
-            renderNote(note);
             categoryCounts[note.category]++;
         });
 
-        // Set widths based on category counts
         const totalNotes = notes.length;
         $('.statistic-important').width(totalNotes ? (categoryCounts.important / totalNotes) * 100 + '%' : '0%');
         $('.statistic-notImportant').width(totalNotes ? (categoryCounts.notImportant / totalNotes) * 100 + '%' : '0%');
